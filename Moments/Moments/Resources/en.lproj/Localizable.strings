@@ -1,0 +1,41 @@
+/* 
+  Localizable.strings
+  Moments
+
+  Created by Jake Lin on 22/10/20.
+  
+*/
+
+// Internal Menu
+"internalMenu.area51" = "Area 51";
+"internalMenu.generalInfo" = "General Info";
+"internalMenu.version" = "Version";
+"internalMenu.CFBundleVersion" = "CFBundleVersion";
+"internalMenu.designKitDemo" = "DesignKit Demo";
+"internalMenu.featureToggles" = "Feature Toggles";
+"internalMenu.tools" = "Tools";
+"internalMenu.crashApp" = "Crash App";
+
+"internalMenu.typography" = "Typography";
+"internalMenu.colors" = "Colors";
+"internalMenu.avatars" = "Avatars";
+
+"internalMenu.favoriteButton" = "Favorite button";
+"internalMenu.starFavoriteButton" = "Star favorite button";
+"internalMenu.heartFavoriteButton" = "Heart favorite button";
+
+"internalMenu.likeButtonForMomentEnabled" = "Like Button Enable";
+
+// Moments List
+"momentsList.errorMessage" = "Something went wrong, please try again later";
+
+// Development messages
+"development.defaultConfiguration" = "Default Configuration";
+"development.fatalErrorInitCoderNotImplemented" = "init(coder:) has not been implemented";
+"development.fatalErrorAccessedAutomaticallyAdjustedContentViewEarly" = "This property has been accessed before the superview has been loaded. Only use this property in `viewDidLoad` or later, as accessing it inside `init` may add a second instance of this view to the hierarchy.";
+"development.fatalErrorSubclassToImplement" = "Subclass has to implement this function";
+"development.graphqlPath" = "/graphql";
+"development.runningUnitTests" = "Running unit tests...";
+
+// Tracking events
+"Tracking.momentsScreen" = "Moments screen";

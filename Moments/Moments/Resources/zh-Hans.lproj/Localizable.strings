@@ -1,0 +1,41 @@
+/* 
+  Localizable.strings
+  Moments
+
+  Created by Jake Lin on 22/10/20.
+  
+*/
+
+// Internal Menu
+"internalMenu.area51" = "51 区";
+"internalMenu.generalInfo" = "通用信息";
+"internalMenu.version" = "版本号";
+"internalMenu.CFBundleVersion" = "CFBundleVersion";
+"internalMenu.designKitDemo" = "DesignKit 范例";
+"internalMenu.featureToggles" = "功能开关";
+"internalMenu.tools" = "工具箱";
+"internalMenu.crashApp" = "闪退 App";
+
+"internalMenu.typography" = "字体";
+"internalMenu.colors" = "颜色";
+"internalMenu.avatars" = "人像";
+
+"internalMenu.favoriteButton" = "点赞按钮";
+"internalMenu.starFavoriteButton" = "星形点赞按钮";
+"internalMenu.heartFavoriteButton" = "心形点赞按钮";
+
+"internalMenu.likeButtonForMomentEnabled" = "开启点赞按钮";
+
+// Moments List
+"momentsList.errorMessage" = "出错啦，请稍后再试";
+
+// Development messages
+"development.defaultConfiguration" = "Default Configuration";
+"development.fatalErrorInitCoderNotImplemented" = "init(coder:) has not been implemented";
+"development.fatalErrorAccessedAutomaticallyAdjustedContentViewEarly" = "This property has been accessed before the superview has been loaded. Only use this property in `viewDidLoad` or later, as accessing it inside `init` may add a second instance of this view to the hierarchy.";
+"development.fatalErrorSubclassToImplement" = "Subclass has to implement this function";
+"development.graphqlPath" = "/graphql";
+"development.runningUnitTests" = "运行单元测试中...";
+
+// Tracking events
+"Tracking.momentsScreen" = "Moments screen";
