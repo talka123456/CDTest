@@ -160,11 +160,11 @@ platform :ios do
     # 校验分支
     ## 校验分支名称
     branchName = git_branch()
-    UI.error "当前分支非指定构建分支, 请先切换分支后再次构建..." unless branchName === "master"
+    UI.error "当前分支非指定构建分支, 请先切换分支后再次构建..." unless branchName === "main"
 
     ## 校验是否有未提交的代码
     ensure_git_status_clean()
-    
+
     ## 拉取最新代码
     git_pull()
 
