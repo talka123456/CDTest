@@ -1,0 +1,6 @@
+framework module DesignKit {
+  umbrella header "DesignKit-umbrella.h"
+
+  export *
+  module * { export * }
+}

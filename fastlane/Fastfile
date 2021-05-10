@@ -1,0 +1,326 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+require 'fileutils'
+
+# 根据不同的类型和target, 区分不同的ipa输出路径 
+# 路径格式为 : Target/exportmethod/configuration, 例如Dealmoon/AdHoc/Release
+def dm_output_directoryPath(target, configuration, exportmethod)
+  path = "../../FastlaneLogs/BuildIPA/#{target}/#{exportmethod}/#{configuration}"
+  FileUtils.mkdir_p(path, :mode=>0777) unless File::exist?(path)
+  return File::expand_path(path, "~/home")
+end
+
+# 命名规则:target_configuration_exportmethod__version_buildversion_timestap
+def dm_output_ipaName(target, configuration, exportmethod, version, buildversion)
+  # 打包名字
+  time = Time.new
+  dateTimeStr = "#{time.month}/#{time.day}-#{time.hour}:#{time.min}"
+  pkgName = "#{target}_#{configuration}_#{exportmethod}_version:#{version}_build:#{buildversion}_time:#{dateTimeStr}.ipa"
+  return pkgName
+end
+
+# 更新版本号
+def dm_update_build_number()
+  currentTime = Time.new.strftime("%Y%m%d")
+  build = get_build_number()
+  if build.include?"#{currentTime}."
+    # => 为当天版本 计算迭代版本号
+    lastStr = build[build.length-2..build.length-1]
+    lastNum = lastStr.to_i
+    lastNum = lastNum + 1
+    lastStr = lastNum.to_s
+    if lastNum < 10
+      lastStr = lastStr.insert(0,"0")
+    end
+      build = "#{currentTime}.#{lastStr}"
+    else
+      # => 非当天版本 build 号重置
+      build = "#{currentTime}.01"
+  end
+  puts("*************| 更新build #{build} |*************")
+  # => 更改项目 build 号
+  increment_build_number(
+    build_number: "#{build}"
+  )
+
+end
+
+# 获取build bumber
+def dm_get_build_number()
+  currentTime = Time.new.strftime("%Y%m%d")
+  build = get_build_number()
+  if build.include?"#{currentTime}."
+    # => 为当天版本 计算迭代版本号
+    lastStr = build[build.length-2..build.length-1]
+    lastNum = lastStr.to_i
+    lastNum = lastNum
+    lastStr = lastNum.to_s
+    if lastNum < 10
+      lastStr = lastStr.insert(0,"0")
+    end
+      build = "#{lastStr}"
+  end
+
+  return build
+end
+
+# 校验关键参数
+def dm_checkParameters(target, configuration, exportmethod, outputDir, ipaName, version, buildversion)
+  if target.nil? || target.empty?
+    UI.error "Target设置出错, 请检查并重新构建..."
+  end
+
+  if configuration.nil? || configuration.empty? 
+    UI.error "构建环境设置出错, 请检查并重新构建..."
+  end
+
+  if exportmethod.nil? || exportmethod.empty? 
+    UI.error "构建ipa格式设置出错, 请检查并重新构建..."
+  end
+
+  if outputDir.nil? || outputDir.empty? 
+    UI.error "构建输出路径设置出错, 请检查并重新构建..."
+  end
+
+  if ipaName.nil? || ipaName.empty? 
+    UI.error "构建ipa 名称设置出错, 请检查并重新构建..."
+  end
+
+  if version.nil? || version.empty? 
+    UI.error "App 版本号Version设置出错, 请检查并重新构建..."
+  end
+
+  if buildversion.nil? || buildversion.empty? 
+    UI.error "构建版本号Build设置出错, 请检查并重新构建..."
+  end
+end
+
+# 设置默认值
+def dm_setDefaultValue(origin, value)
+  result = origin
+  result = value if (result.nil? || result.empty?)
+  return result
+end
+
+def dm_getXcodeVersion()
+  _xcodeBuild = %x(`which xcodebuild`)
+  _xcodeVersion = %x(`cd .. & xcodebuild -version | head -1 | cut -d " " -f 2`)
+  _xcodeVersion = "获取xcode版本号失败" if (_xcodeVersion.nil? || _xcodeVersion.empty?)
+  return _xcodeVersion
+end
+
+# 格式化打印
+def dm_putsFormat(*values)
+print "\r\n###################################################################\r\n"
+values.each do |value|
+print "#"
+print "#{value}\r\n"
+end
+print "###################################################################\r\n"
+end
+
+default_platform(:ios)
+
+platform :ios do
+
+  before_all do
+    # ENV["SLACK_URL"] = "https://hooks.slack.com/services/..."
+     cocoapods(use_bundle_exec: true)
+  end
+
+  desc "build app interface"
+  desc "op 支持参数： shouldUp:是否需要上传[0, 1]"
+  desc "op 支持参数： version:版本(可选)"
+  desc "op 支持参数： method: method 配置[app-store, ad-hoc, package, enterprise, development, developer-id] ** up为testflight需要制定为app-store **"
+  desc "op 支持参数:  scheme : 构建目标"
+  desc "op 支持参数:  configuration : 构建环境"
+  desc "op 支持参数: message: 提交到fir.im的消息内容"
+  desc "op 支持参数: infoplist : info.plist文件路径 "
+
+  lane :dm_buildApp do |options|
+    # 读取配置参数
+    shouldUp = dm_setDefaultValue(options[":shouldUp"], "0")
+    method = dm_setDefaultValue(options[":method"], ENV["DMDefaultExportMethod"])
+    scheme = dm_setDefaultValue(options[":scheme"], ENV["DMDefaultTarget"])
+    configuration = dm_setDefaultValue(options[":configuration"], ENV["DMDefaultConfiguration"])
+    infoplist = dm_setDefaultValue(options[":infoplist"], ENV["DMDefaultInfoPath"])
+
+    # 校验分支
+    ## 校验分支名称
+    branchName = git_branch()
+    UI.error "当前分支非指定构建分支, 请先切换分支后再次构建..." unless branchName === "master"
+
+    ## 校验是否有未提交的代码
+    ensure_git_status_clean()
+    
+    ## 拉取最新代码
+    git_pull()
+
+    # 校验证书
+
+    # 获取构建参数
+    ## 版本号
+    version = options[":version"]
+    if version.nil? || version.empty?
+      version = get_version_number(target:scheme, configuration:configuration)
+    else
+      set_info_plist_value(path:infoplist, key: "CFBundleShortVersionString", value:"version")
+    end
+
+    ## 更新构建版本号
+    dm_update_build_number()
+    build_version = dm_get_build_number()
+
+    ## 构建message
+    message = options[":message"]
+    if message.nil? || message.empty?
+      # todo: 获取git log message 作为提交的内容
+    end
+
+    # 输出路径
+    outpath = dm_output_directoryPath(scheme, configuration, method)
+    ipaName = dm_output_ipaName(scheme, configuration, method, version, build_version)
+
+    # 获取当前xcode版本号
+    # dm_xcodeversion = dm_getXcodeVersion()
+
+    # 构建前最后校验关键参数
+    dm_checkParameters("#{scheme}", "#{configuration}", "#{method}", "#{outpath}", "#{ipaName}", "#{version}", "#{build_version}")
+
+    # 根据不同的环境调用不同的打包方法
+    dm_putsFormat("开始构建应用:", "target: #{scheme}", "configuration: #{configuration}", "exportmethod: #{method}", "output path : #{outpath}", "ipa name : #{ipaName}", "version: #{version}", "build_version: #{build_version}", "branch : #{branchName}")
+
+    # case method
+    # when "app-store" then
+    #   build_AppStore
+    # when "ad-hoc" then
+    #   build_AdHoc
+    # when "enterprise" then
+    #   build_inHouse
+    # when "development" then
+      # UI.error "暂不支持的构建方式"
+    # end
+
+    # 是否需要上传配置，默认不上传
+    # shouldUp = op[:shouldUp]
+    # if shouldUp == "1"
+    # upType = "fir"
+    # elsif upType.include? "fir"
+    # firim(firim_api_token: "xxxxxxxx")#上传fir，如果是新项目，fir会自动创建
+  end
+
+  # 构建AdHoc版本
+  desc "AdHoc Build"
+  lane :build_AdHoc do |op|
+
+    # 如果你没有申请adhoc证书，sigh会自动帮你申请，并且添加到Xcode里
+    sigh(adhoc: true)
+
+    # gym(
+    #   workspace:
+    # 	scheme: "", 
+    # 	clean: true, 
+    # 	silent: true,
+    # 	export_method:'ad-hoc', 
+    # 	export_options: {
+    #   	  provisioningProfiles: { 
+    #   	  #前面的是bundle id，后面的是对应用到的mobileprovision，只需要名字，不需要后缀
+    #       "me.ithome.xxx" => "xxx"
+    #     }},
+    #     configuration: "", 
+    #     output_directory: "", 
+    #     output_name: "output_name", 
+    #     # 签名证书的名称，去钥匙串-登录-证书里面复制
+    #     codesigning_identity:'iPhone Distribution: xxx (Rxxx47)',
+    #     export_xcargs: '-allowProvisioningUpdates'
+    #     )
+
+    # 前往fir.im获取 api token, 将鼠标放置右上角账号上面, 在下拉窗选择API token
+   # 如果使用Firimfile, 此处为 firim 即可
+   firim(firim_api_token:'你的firim_api_token')
+
+  end
+
+  # 构建 inHouse Enterprise 版本
+  desc "inHouse Build"
+  lane :build_inHouse do
+
+  end
+
+  # 构建app sotre 版本
+  desc "App Store Build "
+  lane :build_AppStore do
+    # add actions here: https://docs.fastlane.tools/actions
+    update_project_provisioning(
+        # 之前有sigh下载的描述文件存储路径
+        profile:"fastlane/provision/xxx.mobileprovision",
+        # 打包配置，Debug，Release
+        build_configuration:"Release"
+    )
+    automatic_code_signing(
+        # 工程文件所在路径
+        path:"xxx.xcodeproj",
+        # 是否使用自动签名，这里如果是打包的话应该一般都为false吧，默认也是false
+        use_automatic_signing:false,
+        # 这个就不用说了，需要修改的targets
+        targets:"xxx",
+        # 用哪种方式打包“iPhone Develop”还是“iPhone Distribution”
+        code_sign_identity:"iPhone Distribution",
+        # 描述文件名称， 也就是使用哪个描述文件打包
+        profile_name:"xxx"
+    )
+
+		# 开始打包
+		gym(
+		#指定scheme的名字
+		scheme: "#{schemeName}",
+		#输出的ipa名称
+		output_name:"#{schemeName}",
+		# 是否清空以前的编译信息 true：是
+		clean:true,
+		# 指定打包方式，Release 或者 Debug
+		configuration:"Release",
+		# 指定打包所使用的输出方式，目前支持app-store, package, ad-hoc, enterprise, development
+		export_method:"#{export_method}",
+		# 指定输出文件夹，这里会保存我们最后生成的ipa文件，也就是存到了我们上面提到的fastlane文件夹中的build文件夹中
+		output_directory:"./fastlane/build",
+		)	
+
+    # 需要delive init 设置matedata以及deliver的配置
+    deliver
+
+    # 判断是否已经存在tag
+    git_tag_exists()
+
+    # 不存在则创建tag
+    add_git_tag()
+  end
+
+  after_all do |lane|
+    # This block is called, only if the executed lane was successful
+
+    # slack(
+    #   message: "Successfully deployed new App Update."
+    # )
+  end
+
+  error do |lane, exception|
+    # slack(
+    #   message: exception.message,
+    #   success: false
+    # )
+  end
+
+end

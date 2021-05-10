@@ -1,0 +1,111 @@
+# Customise this file, documentation can be found here:
+# https://docs.fastlane.tools/actions/
+# All available actions: https://docs.fastlane.tools/actions
+# can also be listed using the `fastlane actions` command
+
+# Change the syntax highlighting to Ruby
+# All lines starting with a # are ignored when running `fastlane`
+
+# If you want to automatically update fastlane if a new version is available:
+# update_fastlane
+
+# This is the minimum version number required.
+# Update this, if you use features of a newer version
+fastlane_version "2.62.0"
+
+default_platform :ios
+
+platform :ios do
+before_all do
+# ENV["SLACK_URL"] = "https://hooks.slack.com/services/..."
+# cocoapods
+# carthage
+end
+
+desc "Runs all the tests"
+lane :test do
+scan
+end
+
+# 定义全局参数：项目名称
+projName = "Plush"
+# 定义全局参数：Assets路径
+projAssetsPath = "../#{projName}/Resources/Assets.xcassets"
+# 定义全局参数：Info.plist路径
+plistPath = "./#{projName}/Resources/Info.plist"
+# 定义全局参数：包名（接收之后压缩使用）
+pkgName = ""
+# 定义全局参数：基本包名
+basePkgName = "Plush"
+# 定义全局参数：输出目录，对应output_directory配置
+outputBaseDir = "output"
+
+desc "自定义的渠道打包"
+desc "使用方式：苹果助手：`bundle exec fastlane customChannelBeta ch:pgzs shouldUp:0`"
+desc "使用方式：91助手：`bundle exec fastlane customChannelBeta ch:91zs shouldUp:0`"
+desc "op 支持参数： ch:渠道类型[pgzs, 91zs, AppStore(默认)]"
+desc "op 支持参数： shouldUp:是否需要上传[0, 1]"
+desc "op 支持参数： up:上传类型[testflight, fir]"
+desc "op 支持参数： exportMethod: export_method 配置[app-store, ad-hoc, package, enterprise, development（默认）, developer-id] ** up为testflight需要制定为app-store **"
+desc "op 支持参数： version:版本(可选)"
+desc "op 支持参数： build:构建版本(可选，testflight和appstore这个参数需要制定一个不重复的)"
+lane :customChannelBeta do |op|
+
+# build_ios_app 参数配置
+gym(
+export_method: exportMethod, # 相当于配置 Archives->Export->mehtod:[app-store, ad-hoc, package, enterprise, development(默认), developer-id]
+output_name: pkgName,
+configuration: "Release", # 相当于配置Scheme->Build Configuration:[Release, Debug]，Release会生成dsym文件，而Debug不会
+output_directory: outputBaseDir,
+scheme: "Plush",
+)
+
+
+end
+end
+end
+
+desc "上传到 App Store"
+lane :release do
+# match(type: "appstore")
+# snapshot
+gym(
+export_method: "app-store", # 相当于配置 Archives->Export->mehtod:[app-store, ad-hoc, package, enterprise, development, developer-id]
+output_name: pkgName,
+configuration: "Release", # 相当于配置Scheme->Build Configuration:[Release, Debug]，Release会生成dsym文件，而Debug不会
+output_directory: outputBaseDir,
+scheme: "Plush",
+)
+deliver(force: true)
+# frameit
+end
+
+# You can define as many lanes as you want
+
+after_all do |lane, op|
+# This block is called, only if the executed lane was successful
+
+# slack(
+# message: "Successfully deployed new App Update."
+# )
+
+if !pkgName.empty?
+fileName = pkgName.gsub(".ipa", "")
+dsymName = "#{fileName}.app.dSYM.zip"
+zipFileName = "#{fileName}.zip"
+
+# 使用zip命令压缩
+zipCmd = "zip ../#{outputBaseDir}/#{zipFileName} ../#{outputBaseDir}/#{dsymName} ../#{outputBaseDir}/#{pkgName}"
+puts "begin zip #{zipCmd}"
+`#{zipCmd}`
+end
+
+end
+
+error do |lane, exception|
+# slack(
+# message: exception.message,
+# success: false
+# )
+end
+end

@@ -1,7 +1,7 @@
 source 'https://cdn.cocoapods.org/'
 
 workspace './Moments.xcworkspace'
-project './Moments/Moments.xcodeproj'
+project './Moments.xcodeproj'
 
 platform :ios, '14.0'
 use_frameworks!
