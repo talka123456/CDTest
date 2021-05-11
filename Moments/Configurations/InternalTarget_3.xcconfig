@@ -2,5 +2,5 @@
 #include "BaseTarget.xcconfig"
 
 PRODUCT_BUNDLE_NAME = $(inherited) β
-PRODUCT_BUNDLE_IDENTIFIER = com.dealmoon.moments.internal
+PRODUCT_BUNDLE_IDENTIFIER = com.dealmoon.moments.internal3
 FIREBASE_CONFIG_FILENAME = GoogleService-Info-Internal

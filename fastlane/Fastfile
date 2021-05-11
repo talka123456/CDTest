@@ -12,14 +12,14 @@
 
 # Uncomment the line if you want fastlane to automatically update itself
 # update_fastlane
-require 'fileutils'
+fastlane_require 'fileutils'
 
 # 根据不同的类型和target, 区分不同的ipa输出路径 
 # 路径格式为 : Target/exportmethod/configuration, 例如Dealmoon/AdHoc/Release
 def dm_output_directoryPath(target, configuration, exportmethod)
   path = "../../FastlaneLogs/BuildIPA/#{target}/#{exportmethod}/#{configuration}"
   FileUtils.mkdir_p(path, :mode=>0777) unless File::exist?(path)
-  return File::expand_path(path, "~/home")
+  return File::expand_path(path)
 end
 
 # 命名规则:target_configuration_exportmethod__version_buildversion_timestap
@@ -141,7 +141,7 @@ platform :ios do
   end
 
   desc "build app interface"
-  desc "op 支持参数： shouldUp:是否需要上传[0, 1]"
+  desc "op 支持参数： shouldUp:是否需要上传true/false"
   desc "op 支持参数： version:版本(可选)"
   desc "op 支持参数： method: method 配置[app-store, ad-hoc, package, enterprise, development, developer-id] ** up为testflight需要制定为app-store **"
   desc "op 支持参数:  scheme : 构建目标"
@@ -151,11 +151,11 @@ platform :ios do
 
   lane :dm_buildApp do |options|
     # 读取配置参数
-    shouldUp = dm_setDefaultValue(options[":shouldUp"], "0")
-    method = dm_setDefaultValue(options[":method"], ENV["DMDefaultExportMethod"])
-    scheme = dm_setDefaultValue(options[":scheme"], ENV["DMDefaultTarget"])
-    configuration = dm_setDefaultValue(options[":configuration"], ENV["DMDefaultConfiguration"])
-    infoplist = dm_setDefaultValue(options[":infoplist"], ENV["DMDefaultInfoPath"])
+    shouldUp = dm_setDefaultValue(options[:shouldUp], ENV["DMDefaultAutoUpload"])
+    method = dm_setDefaultValue(options[:method], ENV["DMDefaultExportMethod"])
+    scheme = dm_setDefaultValue(options[:scheme], ENV["DMDefaultTarget"])
+    configuration = dm_setDefaultValue(options[:configuration], ENV["DMDefaultConfiguration"])
+    infoplist = dm_setDefaultValue(options[:infoplist], ENV["DMDefaultInfoPath"])
 
     # 校验分支
     ## 校验分支名称
@@ -163,16 +163,16 @@ platform :ios do
     UI.error "当前分支非指定构建分支, 请先切换分支后再次构建..." unless branchName === "main"
 
     ## 校验是否有未提交的代码
-    ensure_git_status_clean()
+    # ensure_git_status_clean()
 
     ## 拉取最新代码
-    git_pull()
+    # git_pull()
 
     # 校验证书
 
     # 获取构建参数
     ## 版本号
-    version = options[":version"]
+    version = options[:version]
     if version.nil? || version.empty?
       version = get_version_number(target:scheme, configuration:configuration)
     else
@@ -184,7 +184,7 @@ platform :ios do
     build_version = dm_get_build_number()
 
     ## 构建message
-    message = options[":message"]
+    message = options[:message]
     if message.nil? || message.empty?
       # todo: 获取git log message 作为提交的内容
     end
@@ -202,28 +202,29 @@ platform :ios do
     # 根据不同的环境调用不同的打包方法
     dm_putsFormat("开始构建应用:", "target: #{scheme}", "configuration: #{configuration}", "exportmethod: #{method}", "output path : #{outpath}", "ipa name : #{ipaName}", "version: #{version}", "build_version: #{build_version}", "branch : #{branchName}")
 
-    # case method
+    case method
+    when "enterprise"
+      build_inHouse(workspace:ENV["DMWorkSpace"], scheme:scheme, export_method:method, configuration:configuration, output_directory:outpath, output_name:ipaName)
     # when "app-store" then
     #   build_AppStore
     # when "ad-hoc" then
     #   build_AdHoc
-    # when "enterprise" then
-    #   build_inHouse
     # when "development" then
-      # UI.error "暂不支持的构建方式"
-    # end
+    #   UI.error "暂不支持的构建方式"
+    end
 
     # 是否需要上传配置，默认不上传
     # shouldUp = op[:shouldUp]
     # if shouldUp == "1"
     # upType = "fir"
     # elsif upType.include? "fir"
+    # 前往fir.im获取 api token, 将鼠标放置右上角账号上面, 在下拉窗选择API token
     # firim(firim_api_token: "xxxxxxxx")#上传fir，如果是新项目，fir会自动创建
   end
 
   # 构建AdHoc版本
   desc "AdHoc Build"
-  lane :build_AdHoc do |op|
+  private_lane :build_AdHoc do |op|
 
     # 如果你没有申请adhoc证书，sigh会自动帮你申请，并且添加到Xcode里
     sigh(adhoc: true)
@@ -247,21 +248,36 @@ platform :ios do
     #     export_xcargs: '-allowProvisioningUpdates'
     #     )
 
-    # 前往fir.im获取 api token, 将鼠标放置右上角账号上面, 在下拉窗选择API token
-   # 如果使用Firimfile, 此处为 firim 即可
-   firim(firim_api_token:'你的firim_api_token')
-
   end
 
   # 构建 inHouse Enterprise 版本
   desc "inHouse Build"
-  lane :build_inHouse do
-
+  private_lane :build_inHouse do |op|
+    gym(
+      workspace: op[:workspace],
+    	scheme: op[:scheme], 
+    	clean: true, 
+    	silent: true,
+    	export_method:op[:export_method], 
+    	# export_options: {
+      # 	  provisioningProfiles: { 
+      # 	  #前面的是bundle id，后面的是对应用到的mobileprovision，只需要名字，不需要后缀
+      #     "me.ithome.xxx" => "xxx"
+      #   }},
+      configuration: op[:configuration], 
+      output_directory: op[:output_directory] ,
+      output_name: op[:output_name], 
+      include_symbols: true,
+      include_bitcode: true,
+      # 签名证书的名称，去钥匙串-登录-证书里面复制
+      # codesigning_identity:'iPhone Distribution: xxx (Rxxx47)',
+      export_xcargs: '-allowProvisioningUpdates'
+      )
   end
 
   # 构建app sotre 版本
   desc "App Store Build "
-  lane :build_AppStore do
+  private_lane :build_AppStore do
     # add actions here: https://docs.fastlane.tools/actions
     update_project_provisioning(
         # 之前有sigh下载的描述文件存储路径

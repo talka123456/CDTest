@@ -164,6 +164,24 @@
 		1F2AB8722644D40600132621 /* FirebaseRemoteConfigDefaults.plist in Resources */ = {isa = PBXBuildFile; fileRef = AE3EF3C1255C1CED004B7FB0 /* FirebaseRemoteConfigDefaults.plist */; };
 		1F2AB8732644D40600132621 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AE781DA425419F22001CFD77 /* LaunchScreen.storyboard */; };
 		1F2AB8742644D40600132621 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = AE781DBD2541A0C5001CFD77 /* Localizable.strings */; };
+		1F2DB968264A595D00ED7110 /* AppStoreTarget_2.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 1F2DB962264A595C00ED7110 /* AppStoreTarget_2.xcconfig */; };
+		1F2DB969264A595D00ED7110 /* AppStoreTarget_2.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 1F2DB962264A595C00ED7110 /* AppStoreTarget_2.xcconfig */; };
+		1F2DB96A264A595D00ED7110 /* AppStoreTarget_2.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 1F2DB962264A595C00ED7110 /* AppStoreTarget_2.xcconfig */; };
+		1F2DB96B264A595D00ED7110 /* DebugTarget_2.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 1F2DB963264A595D00ED7110 /* DebugTarget_2.xcconfig */; };
+		1F2DB96C264A595D00ED7110 /* DebugTarget_2.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 1F2DB963264A595D00ED7110 /* DebugTarget_2.xcconfig */; };
+		1F2DB96D264A595D00ED7110 /* DebugTarget_2.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 1F2DB963264A595D00ED7110 /* DebugTarget_2.xcconfig */; };
+		1F2DB96E264A595D00ED7110 /* AppStoreTarget_3.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 1F2DB964264A595D00ED7110 /* AppStoreTarget_3.xcconfig */; };
+		1F2DB96F264A595D00ED7110 /* AppStoreTarget_3.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 1F2DB964264A595D00ED7110 /* AppStoreTarget_3.xcconfig */; };
+		1F2DB970264A595D00ED7110 /* AppStoreTarget_3.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 1F2DB964264A595D00ED7110 /* AppStoreTarget_3.xcconfig */; };
+		1F2DB971264A595D00ED7110 /* InternalTarget_3.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 1F2DB965264A595D00ED7110 /* InternalTarget_3.xcconfig */; };
+		1F2DB972264A595D00ED7110 /* InternalTarget_3.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 1F2DB965264A595D00ED7110 /* InternalTarget_3.xcconfig */; };
+		1F2DB973264A595D00ED7110 /* InternalTarget_3.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 1F2DB965264A595D00ED7110 /* InternalTarget_3.xcconfig */; };
+		1F2DB974264A595D00ED7110 /* DebugTarget_3.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 1F2DB966264A595D00ED7110 /* DebugTarget_3.xcconfig */; };
+		1F2DB975264A595D00ED7110 /* DebugTarget_3.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 1F2DB966264A595D00ED7110 /* DebugTarget_3.xcconfig */; };
+		1F2DB976264A595D00ED7110 /* DebugTarget_3.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 1F2DB966264A595D00ED7110 /* DebugTarget_3.xcconfig */; };
+		1F2DB977264A595D00ED7110 /* InternalTarget_2.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 1F2DB967264A595D00ED7110 /* InternalTarget_2.xcconfig */; };
+		1F2DB978264A595D00ED7110 /* InternalTarget_2.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 1F2DB967264A595D00ED7110 /* InternalTarget_2.xcconfig */; };
+		1F2DB979264A595D00ED7110 /* InternalTarget_2.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 1F2DB967264A595D00ED7110 /* InternalTarget_2.xcconfig */; };
 		95872D3BCD9EDC43FC9D79C1 /* Pods_Moments.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 01141CCFDA45B22A74D0337A /* Pods_Moments.framework */; };
 		AE1D1CC42560B841006D82FA /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1D1CC32560B841006D82FA /* main.swift */; };
 		AE1D1D04256162DD006D82FA /* UnitTestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE1D1CD42560C97D006D82FA /* UnitTestViewController.swift */; };
@@ -284,6 +302,12 @@
 		1F2AB81D2644D3FC00132621 /* Moments_2.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Moments_2.plist; path = /Users/clownfish/Desktop/demo/CDTest/Moments/Moments_2.plist; sourceTree = "<absolute>"; };
 		1F2AB87B2644D40600132621 /* Moments_3.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Moments_3.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1F2AB87C2644D40700132621 /* Moments_3.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Moments_3.plist; path = /Users/clownfish/Desktop/demo/CDTest/Moments/Moments_3.plist; sourceTree = "<absolute>"; };
+		1F2DB962264A595C00ED7110 /* AppStoreTarget_2.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = AppStoreTarget_2.xcconfig; sourceTree = "<group>"; };
+		1F2DB963264A595D00ED7110 /* DebugTarget_2.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = DebugTarget_2.xcconfig; sourceTree = "<group>"; };
+		1F2DB964264A595D00ED7110 /* AppStoreTarget_3.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = AppStoreTarget_3.xcconfig; sourceTree = "<group>"; };
+		1F2DB965264A595D00ED7110 /* InternalTarget_3.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = InternalTarget_3.xcconfig; sourceTree = "<group>"; };
+		1F2DB966264A595D00ED7110 /* DebugTarget_3.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = DebugTarget_3.xcconfig; sourceTree = "<group>"; };
+		1F2DB967264A595D00ED7110 /* InternalTarget_2.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = InternalTarget_2.xcconfig; sourceTree = "<group>"; };
 		244222E3830F8E30DDD8C5F7 /* Pods-MomentsTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MomentsTests.release.xcconfig"; path = "Target Support Files/Pods-MomentsTests/Pods-MomentsTests.release.xcconfig"; sourceTree = "<group>"; };
 		3377C8D20EE7BE1F43B9DAA0 /* Pods-Moments.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Moments.debug.xcconfig"; path = "../CDTest/Pods/Target Support Files/Pods-Moments/Pods-Moments.debug.xcconfig"; sourceTree = "<group>"; };
 		440EF30DA4BD52745F7D9A2C /* Pods-MomentsTests.appstore.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MomentsTests.appstore.xcconfig"; path = "../CDTest/Pods/Target Support Files/Pods-MomentsTests/Pods-MomentsTests.appstore.xcconfig"; sourceTree = "<group>"; };
@@ -931,6 +955,12 @@
 		AEBC894C25395AA3001D534E /* Targets */ = {
 			isa = PBXGroup;
 			children = (
+				1F2DB962264A595C00ED7110 /* AppStoreTarget_2.xcconfig */,
+				1F2DB964264A595D00ED7110 /* AppStoreTarget_3.xcconfig */,
+				1F2DB963264A595D00ED7110 /* DebugTarget_2.xcconfig */,
+				1F2DB966264A595D00ED7110 /* DebugTarget_3.xcconfig */,
+				1F2DB967264A595D00ED7110 /* InternalTarget_2.xcconfig */,
+				1F2DB965264A595D00ED7110 /* InternalTarget_3.xcconfig */,
 				AEBC893D253958D0001D534E /* AppStoreTarget.xcconfig */,
 				AEBC8948253958D0001D534E /* BaseTarget.xcconfig */,
 				AEBC8941253958D0001D534E /* DebugTarget.xcconfig */,
@@ -1137,8 +1167,14 @@
 			files = (
 				1F2AB8122644D3D500132621 /* Assets.xcassets in Resources */,
 				1F2AB8132644D3D500132621 /* FirebaseRemoteConfigDefaults.plist in Resources */,
+				1F2DB96C264A595D00ED7110 /* DebugTarget_2.xcconfig in Resources */,
 				1F2AB8142644D3D500132621 /* LaunchScreen.storyboard in Resources */,
+				1F2DB969264A595D00ED7110 /* AppStoreTarget_2.xcconfig in Resources */,
 				1F2AB8152644D3D500132621 /* Localizable.strings in Resources */,
+				1F2DB972264A595D00ED7110 /* InternalTarget_3.xcconfig in Resources */,
+				1F2DB978264A595D00ED7110 /* InternalTarget_2.xcconfig in Resources */,
+				1F2DB975264A595D00ED7110 /* DebugTarget_3.xcconfig in Resources */,
+				1F2DB96F264A595D00ED7110 /* AppStoreTarget_3.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1148,8 +1184,14 @@
 			files = (
 				1F2AB8712644D40600132621 /* Assets.xcassets in Resources */,
 				1F2AB8722644D40600132621 /* FirebaseRemoteConfigDefaults.plist in Resources */,
+				1F2DB96D264A595D00ED7110 /* DebugTarget_2.xcconfig in Resources */,
 				1F2AB8732644D40600132621 /* LaunchScreen.storyboard in Resources */,
+				1F2DB96A264A595D00ED7110 /* AppStoreTarget_2.xcconfig in Resources */,
 				1F2AB8742644D40600132621 /* Localizable.strings in Resources */,
+				1F2DB973264A595D00ED7110 /* InternalTarget_3.xcconfig in Resources */,
+				1F2DB979264A595D00ED7110 /* InternalTarget_2.xcconfig in Resources */,
+				1F2DB976264A595D00ED7110 /* DebugTarget_3.xcconfig in Resources */,
+				1F2DB970264A595D00ED7110 /* AppStoreTarget_3.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1159,8 +1201,14 @@
 			files = (
 				AE8A244125381E5100DE782E /* Assets.xcassets in Resources */,
 				AE3EF3C2255C1CED004B7FB0 /* FirebaseRemoteConfigDefaults.plist in Resources */,
+				1F2DB96B264A595D00ED7110 /* DebugTarget_2.xcconfig in Resources */,
 				AE781DA725419F22001CFD77 /* LaunchScreen.storyboard in Resources */,
+				1F2DB968264A595D00ED7110 /* AppStoreTarget_2.xcconfig in Resources */,
 				AE781DBF2541A0C5001CFD77 /* Localizable.strings in Resources */,
+				1F2DB971264A595D00ED7110 /* InternalTarget_3.xcconfig in Resources */,
+				1F2DB977264A595D00ED7110 /* InternalTarget_2.xcconfig in Resources */,
+				1F2DB974264A595D00ED7110 /* DebugTarget_3.xcconfig in Resources */,
+				1F2DB96E264A595D00ED7110 /* AppStoreTarget_3.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1791,14 +1839,14 @@
 /* Begin XCBuildConfiguration section */
 		1F2AB8192644D3D500132621 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = AEBC8941253958D0001D534E /* DebugTarget.xcconfig */;
+			baseConfigurationReference = 1F2DB963264A595D00ED7110 /* DebugTarget_2.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = 6HLFCRTYQU;
+				DEVELOPMENT_TEAM = RPB3YH3629;
 				INFOPLIST_FILE = Moments/Moments_2.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = "$(IPHONEOS_DEPLOYMENT_TARGET)";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1814,14 +1862,14 @@
 		};
 		1F2AB81A2644D3D500132621 /* Internal */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = AEBC8942253958D0001D534E /* InternalTarget.xcconfig */;
+			baseConfigurationReference = 1F2DB967264A595D00ED7110 /* InternalTarget_2.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEBUG_INFORMATION_FORMAT = "$(DEBUG_INFORMATION_FORMAT)";
-				DEVELOPMENT_TEAM = 6HLFCRTYQU;
+				DEVELOPMENT_TEAM = RPB3YH3629;
 				INFOPLIST_FILE = Moments/Moments_2.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = "$(IPHONEOS_DEPLOYMENT_TARGET)";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1837,14 +1885,14 @@
 		};
 		1F2AB81B2644D3D500132621 /* AppStore */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = AEBC893D253958D0001D534E /* AppStoreTarget.xcconfig */;
+			baseConfigurationReference = 1F2DB962264A595C00ED7110 /* AppStoreTarget_2.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEBUG_INFORMATION_FORMAT = "$(DEBUG_INFORMATION_FORMAT)";
-				DEVELOPMENT_TEAM = 6HLFCRTYQU;
+				DEVELOPMENT_TEAM = RPB3YH3629;
 				INFOPLIST_FILE = Moments/Moments_2.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = "$(IPHONEOS_DEPLOYMENT_TARGET)";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1860,14 +1908,14 @@
 		};
 		1F2AB8782644D40600132621 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = AEBC8941253958D0001D534E /* DebugTarget.xcconfig */;
+			baseConfigurationReference = 1F2DB966264A595D00ED7110 /* DebugTarget_3.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = 6HLFCRTYQU;
+				DEVELOPMENT_TEAM = RPB3YH3629;
 				INFOPLIST_FILE = Moments/Moments_3.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = "$(IPHONEOS_DEPLOYMENT_TARGET)";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1883,14 +1931,14 @@
 		};
 		1F2AB8792644D40600132621 /* Internal */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = AEBC8942253958D0001D534E /* InternalTarget.xcconfig */;
+			baseConfigurationReference = 1F2DB965264A595D00ED7110 /* InternalTarget_3.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEBUG_INFORMATION_FORMAT = "$(DEBUG_INFORMATION_FORMAT)";
-				DEVELOPMENT_TEAM = 6HLFCRTYQU;
+				DEVELOPMENT_TEAM = RPB3YH3629;
 				INFOPLIST_FILE = Moments/Moments_3.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = "$(IPHONEOS_DEPLOYMENT_TARGET)";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1906,14 +1954,14 @@
 		};
 		1F2AB87A2644D40600132621 /* AppStore */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = AEBC893D253958D0001D534E /* AppStoreTarget.xcconfig */;
+			baseConfigurationReference = 1F2DB964264A595D00ED7110 /* AppStoreTarget_3.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEBUG_INFORMATION_FORMAT = "$(DEBUG_INFORMATION_FORMAT)";
-				DEVELOPMENT_TEAM = 6HLFCRTYQU;
+				DEVELOPMENT_TEAM = RPB3YH3629;
 				INFOPLIST_FILE = Moments/Moments_3.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = "$(IPHONEOS_DEPLOYMENT_TARGET)";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1963,7 +2011,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 20210510.16;
+				CURRENT_PROJECT_VERSION = 20210511.05;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -2027,7 +2075,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 20210510.16;
+				CURRENT_PROJECT_VERSION = 20210511.05;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -2058,13 +2106,14 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = 6HLFCRTYQU;
+				DEVELOPMENT_TEAM = RPB3YH3629;
 				INFOPLIST_FILE = Moments/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = "$(IPHONEOS_DEPLOYMENT_TARGET)";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.dealmoon.moments.development;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
@@ -2081,13 +2130,14 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEBUG_INFORMATION_FORMAT = "$(DEBUG_INFORMATION_FORMAT)";
-				DEVELOPMENT_TEAM = 6HLFCRTYQU;
+				DEVELOPMENT_TEAM = RPB3YH3629;
 				INFOPLIST_FILE = Moments/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = "$(IPHONEOS_DEPLOYMENT_TARGET)";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.dealmoon.moments.internal;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
@@ -2213,7 +2263,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 20210510.16;
+				CURRENT_PROJECT_VERSION = 20210511.05;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -2242,15 +2292,16 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
 				DEBUG_INFORMATION_FORMAT = "$(DEBUG_INFORMATION_FORMAT)";
-				DEVELOPMENT_TEAM = 6HLFCRTYQU;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = Moments/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = "$(IPHONEOS_DEPLOYMENT_TARGET)";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.dealmoon.moments;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;

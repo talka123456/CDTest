@@ -29,15 +29,53 @@
 			<key>orderHint</key>
 			<integer>38</integer>
 		</dict>
+		<key>Moments_2-appstore.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>40</integer>
+		</dict>
+		<key>Moments_2-internal.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>41</integer>
+		</dict>
 		<key>Moments_2.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>4</integer>
+			<integer>38</integer>
+		</dict>
+		<key>Moments_3-appstore.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>42</integer>
+		</dict>
+		<key>Moments_3-internal.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>43</integer>
 		</dict>
 		<key>Moments_3.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
-			<integer>3</integer>
+			<integer>39</integer>
+		</dict>
+	</dict>
+	<key>SuppressBuildableAutocreation</key>
+	<dict>
+		<key>1F2AB7BF2644D3D500132621</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>1F2AB81E2644D40600132621</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>AE8A243325381E4F00DE782E</key>
+		<dict>
+			<key>primary</key>
+			<true/>
 		</dict>
 	</dict>
 </dict>
