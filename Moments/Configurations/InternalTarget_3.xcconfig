@@ -1,4 +1,4 @@
-#include "../../Pods/Target Support Files/Pods-Moments/Pods-Moments.internal.xcconfig"
+#include "../../Pods/Target Support Files/Pods-Moments_3/Pods-Moments_3.internal.xcconfig"
 #include "BaseTarget.xcconfig"
 
 PRODUCT_BUNDLE_NAME = $(inherited) β

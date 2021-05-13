@@ -2,8 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>ITSAppUsesNonExemptEncryption</key>
-	<false/>
 	<key>API_BASE_URL</key>
 	<string>$(API_BASE_URL)</string>
 	<key>CFBundleDevelopmentRegion</key>
@@ -21,7 +19,9 @@
 	<key>CFBundleShortVersionString</key>
 	<string>${PRODUCT_VERSION_BASE}</string>
 	<key>CFBundleVersion</key>
-	<string>20210511.05</string>
+	<string>20210512.03</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UIApplicationSceneManifest</key>

@@ -22,19 +22,17 @@ fastlane ios dm_buildApp
 ```
 build app interface
 
-op 支持参数： shouldUp:是否需要上传true/false
+op 支持参数： shouldUp: 是否需要上传true/false, 默认为true
 
-op 支持参数： version:版本(可选)
+op 支持参数： version: 版本(可选), 默认使用工程中的版本号
 
-op 支持参数： method: method 配置[app-store, ad-hoc, package, enterprise, development, developer-id] ** up为testflight需要制定为app-store **
+op 支持参数： method: method 配置[app-store, ad-hoc, enterprise, development], 默认为enterprise
 
 op 支持参数:  scheme : 构建目标
 
-op 支持参数:  configuration : 构建环境
+op 支持参数:  configuration : 构建环境 默认Debug
 
 op 支持参数: message: 提交到fir.im的消息内容
-
-op 支持参数: infoplist : info.plist文件路径 
 
 ----
 

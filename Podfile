@@ -45,12 +45,15 @@ def test_pods
   pod 'RxBlocking', '= 5.1.1'
 end
 
-target 'Moments' do
-  dev_pods
-  core_pods
-  thirdparty_pods
-  ui_pods
-  internal_pods
+targetArray = ['Moments', 'Moments_2', 'Moments_3']
+targetArray.each do |t|
+  target t do
+    dev_pods
+    core_pods
+    thirdparty_pods
+    ui_pods
+    internal_pods
+  end
 end
 
 target 'MomentsTests' do

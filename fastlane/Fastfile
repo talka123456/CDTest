@@ -13,6 +13,7 @@
 # Uncomment the line if you want fastlane to automatically update itself
 # update_fastlane
 fastlane_require 'fileutils'
+fastlane_require 'xcodeproj'
 
 # 根据不同的类型和target, 区分不同的ipa输出路径 
 # 路径格式为 : Target/exportmethod/configuration, 例如Dealmoon/AdHoc/Release
@@ -141,13 +142,12 @@ platform :ios do
   end
 
   desc "build app interface"
-  desc "op 支持参数： shouldUp:是否需要上传true/false"
-  desc "op 支持参数： version:版本(可选)"
-  desc "op 支持参数： method: method 配置[app-store, ad-hoc, package, enterprise, development, developer-id] ** up为testflight需要制定为app-store **"
-  desc "op 支持参数:  scheme : 构建目标"
-  desc "op 支持参数:  configuration : 构建环境"
+  desc "op 支持参数： shouldUp: 是否需要上传true/false, 默认为true"
+  desc "op 支持参数： version: 版本(可选), 默认使用工程中的版本号"
+  desc "op 支持参数： method: method 配置[app-store, ad-hoc, enterprise, development], 默认为enterprise"
+  desc "op 支持参数:  scheme : 构建目标, 默认使用target + configuration的方式"
+  desc "op 支持参数:  configuration : 构建环境 默认Debug"
   desc "op 支持参数: message: 提交到fir.im的消息内容"
-  desc "op 支持参数: infoplist : info.plist文件路径 "
 
   lane :dm_buildApp do |options|
     # 读取配置参数
@@ -155,14 +155,13 @@ platform :ios do
     method = dm_setDefaultValue(options[:method], ENV["DMDefaultExportMethod"])
     scheme = dm_setDefaultValue(options[:scheme], ENV["DMDefaultTarget"])
     configuration = dm_setDefaultValue(options[:configuration], ENV["DMDefaultConfiguration"])
-    infoplist = dm_setDefaultValue(options[:infoplist], ENV["DMDefaultInfoPath"])
 
     # 校验分支
     ## 校验分支名称
     branchName = git_branch()
     UI.error "当前分支非指定构建分支, 请先切换分支后再次构建..." unless branchName === "main"
 
-    ## 校验是否有未提交的代码
+    # 校验是否有未提交的代码
     # ensure_git_status_clean()
 
     ## 拉取最新代码
@@ -194,7 +193,7 @@ platform :ios do
     ipaName = dm_output_ipaName(scheme, configuration, method, version, build_version)
 
     # 获取当前xcode版本号
-    # dm_xcodeversion = dm_getXcodeVersion()
+    dm_xcodeversion = dm_getXcodeVersion()
 
     # 构建前最后校验关键参数
     dm_checkParameters("#{scheme}", "#{configuration}", "#{method}", "#{outpath}", "#{ipaName}", "#{version}", "#{build_version}")
@@ -205,21 +204,22 @@ platform :ios do
     case method
     when "enterprise"
       build_inHouse(workspace:ENV["DMWorkSpace"], scheme:scheme, export_method:method, configuration:configuration, output_directory:outpath, output_name:ipaName)
-    # when "app-store" then
-    #   build_AppStore
-    # when "ad-hoc" then
-    #   build_AdHoc
-    # when "development" then
-    #   UI.error "暂不支持的构建方式"
+    when "app-store" then
+      # build_AppStore
+      UI.error "暂不支持的构建方式"
+    when "ad-hoc" then
+      UI.error "暂不支持的构建方式"
+      # build_AdHoc
+    when "development" then
+      UI.error "暂不支持的构建方式"
     end
 
     # 是否需要上传配置，默认不上传
-    # shouldUp = op[:shouldUp]
-    # if shouldUp == "1"
-    # upType = "fir"
-    # elsif upType.include? "fir"
-    # 前往fir.im获取 api token, 将鼠标放置右上角账号上面, 在下拉窗选择API token
-    # firim(firim_api_token: "xxxxxxxx")#上传fir，如果是新项目，fir会自动创建
+    if shouldUp && !(method.eql?("app-store"))
+      # 前往fir.im获取 api token, 将鼠标放置右上角账号上面, 在下拉窗选择API token
+      fir_cli(api_token: ENV["DMFirIMToken"])
+    end
+    
   end
 
   # 构建AdHoc版本
