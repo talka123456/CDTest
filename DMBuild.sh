@@ -11,19 +11,18 @@ CMD_Codesign=$(which codesign)
 Shell_Work_Path=$(pwd)
 
 ### 自动更新版本号,默认为NO
-UNLOCK_KEYCHAIN_PWD=''
-PROVISION_DIR="${HOME}/Library/MobileDevice/Provisioning Profiles"
+UNLOCK_KEYCHAIN_PWD='Dealmoon'
 
 ## 日志格式化输出
 function logit() {
-    echo -e "\033[32m [IPABuildShell] \033[0m $@" 
+    echo -e "\033[32m【DMBuildShell】\033[0m $@" 
 
 }
 
 ## 日志格式化输出
 function errorExit(){
 
-    echo -e "\033[31m【IPABuildShell】$@ \033[0m"
+    echo -e "\033[31m【DMBuildShell】$@ \033[0m"
     exit 1
 }
 
@@ -194,126 +193,50 @@ function getInfoPlistFile()
 	echo $infoPlistFilePath
 }
 
-# 校验证书签名合法性
-function checkCodeSignIdentityValid()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## 获取描述文件TeamID
+function getProvisionfileTeamID()
 {
-	local codeSignIdentity=$1
-	local content=$($CMD_Security find-identity -v -p codesigning | grep "$codeSignIdentity")
-	echo "$content"
-}
-
-##匹配描述文件
-function matchMobileProvisionFile()
-{	
-
-	##分发渠道
-	local channel=$1
-	local appBundleId=$2
-	##描述文件目录
-	local mobileProvisionFileDir=$3
-	if [[ ! -d "$mobileProvisionFileDir" ]]; then
+	local provisionFile=$1
+    # 判断是否为普通文件
+	if [[ ! -f "$provisionFile" ]]; then
 		exit 1
 	fi
-	##遍历
-	local provisionFile=''
-	local maxExpireTimestmap=0
-
-	for file in "${mobileProvisionFileDir}"/*.mobileprovision; do
-		local bundleIdFromProvisionFile=$(getProfileBundleId "$file")
-		local wildcard=${bundleIdFromProvisionFile:0-2} ##从右边取2个字符串
-
-
-
-
-		local orginPrefix=$(echo ${bundleIdFromProvisionFile%.*})
-		local targetPrefix=$(echo "${appBundleId%.*}")
-
-
-		if [[ "$appBundleId" == "$bundleIdFromProvisionFile"  || (( "$wildcard" == '.*' &&  "$orginPrefix" == "$targetPrefix" )) ]]  ; then
-
-			# echo "$bundleIdFromProvisionFile ： $appBundleId ，$orginPrefix : $targetPrefix "
-			local profileType=$(getProfileType "$file")
-			if [[ "$profileType" == "$channel" ]]; then
-				local timestmap=$(getProvisionfileExpireTimestmap "$file")
-				## 匹配到有效天数最大的描述文件
-				if [[ $timestmap -gt $maxExpireTimestmap ]]; then
-					provisionFile=$file
-					maxExpireTimestmap=$timestmap
-				fi
-			fi
-		fi
-	done
-	echo $provisionFile
+	provisonfileTeamID=$($CMD_PlistBuddy -c 'Print :Entitlements:com.apple.developer.team-identifier' /dev/stdin <<< $($CMD_Security cms -D -i "$provisionFile" 2>/dev/null))
+	echo $provisonfileTeamID
 }
-
-
-
-function getProfileBundleId()
-{
-	local profile=$1
-	# 通过security cms -D -i XXX.mobileprovision可以解析.mobileprovision文件和证书
-	local applicationIdentifier=$($CMD_PlistBuddy -c 'Print :Entitlements:application-identifier' /dev/stdin <<< "$($CMD_Security cms -D -i "$profile" 2>/dev/null )")
-	if [[ $? -ne 0 ]]; then
-		exit 1;
-	fi
-	##截取bundle id,这种截取方法，有一点不太好的就是：当applicationIdentifier的值包含：*时候，会截取失败,如：applicationIdentifier=6789.*
-	local bundleId=${applicationIdentifier#*.}
-	echo $bundleId
-}
-
-function getProfileInfo(){
-
-			if [[ ! -f "$1" ]]; then
-				errorExit "指定描述文件不存在!"
-			fi
-
-			provisionFileTeamID=$(getProvisionfileTeamID "$1")
-			provisionFileType=$(getProfileType "$1")
-			channelName=$(getProfileTypeCNName $provisionFileType)
-			provisionFileName=$(getProvisionfileName "$1")
-			provisionFileBundleID=$(getProfileBundleId "$1")
-			provisionfileTeamName=$(getProvisionfileTeamName "$1")
-			provisionFileUUID=$(getProvisionfileUUID "$1")
-
-  			provisionfileCreateTimestmap=$(getProvisionfileCreateTimestmap "$1")
-  			provisionfileCreateTime=$(date -r `expr $provisionfileCreateTimestmap `  "+%Y年%m月%d" )
-  			provisionfileExpireTimestmap=$(getProvisionfileExpireTimestmap "$1")
-  			provisionfileExpireTime=$(date -r `expr $provisionfileExpireTimestmap `  "+%Y年%m月%d" )
-			provisionFileExpirationDays=$(getExpiretionDays "$provisionfileExpireTimestmap")
-
-			provisionfileCodeSign=$(getProvisionCodeSignIdentity "$1")
-			provisionfileCodeSignSerial=$(getProvisionCodeSignSerial "$1")
-
-			provisionCodeSignCreateTimestmap=$(getProvisionCodeSignCreateTimestamp "$1")
-			provisionCodeSignCreateTime=$(date -r `expr $provisionCodeSignCreateTimestmap `  "+%Y年%m月%d" )
-			provisionCodeSignExpireTimestamp=$(getProvisionCodeSignExpireTimestamp "$1")
-			provisionCodeSignExpireTime=$(date -r `expr $provisionCodeSignExpireTimestamp + 86400`  "+%Y年%m月%d" )
-			provisionCodesignExpirationDays=$(getExpiretionDays "$provisionCodeSignExpireTimestamp")
-			
-
-			logit "【描述文件】名字：$provisionFileName "
-			logit "【描述文件】类型：${provisionFileType}（${channelName}）"
-			logit "【描述文件】TeamID：$provisionFileTeamID "
-			logit "【描述文件】Team Name：$provisionfileTeamName "
-			logit "【描述文件】BundleID：$provisionFileBundleID "
-			logit "【描述文件】UUID：$provisionFileUUID "
-			logit "【描述文件】创建时间：$provisionfileCreateTime "
-			logit "【描述文件】过期时间：$provisionfileExpireTime "
-			logit "【描述文件】有效天数：$provisionFileExpirationDays "
-			logit "【描述文件】使用的证书签名ID：[${provisionfileCodeSign}]"
-			logit "【描述文件】使用的证书序列号：$provisionfileCodeSignSerial"
-			logit "【描述文件】使用的证书创建时间：$provisionCodeSignCreateTime"
-			logit "【描述文件】使用的证书过期时间：$provisionCodeSignExpireTime"
-			logit "【描述文件】使用的证书有效天数：$provisionCodesignExpirationDays "
-
-			if [[ $provisionFileExpirationDays -lt 0 ]]; then
-				errorExit "描述文件:${provisionFileName} 已过期，请更新描述文件!"
-			fi
-			if [[ $provisionCodesignExpirationDays -lt 0 ]]; then
-				errorExit "证书:${provisionfileCodeSign} 已过期，请更新证书!"
-			fi
-}
-
 
 ##获取描述文件类型
 function getProfileType()
@@ -367,191 +290,468 @@ function getProfileTypeCNName()
 
 }
 
+function getProfileBundleId()
+{
+	local profile=$1
+	# 通过security cms -D -i XXX.mobileprovision可以解析.mobileprovision文件和证书
+	local applicationIdentifier=$($CMD_PlistBuddy -c 'Print :Entitlements:application-identifier' /dev/stdin <<< "$($CMD_Security cms -D -i "$profile" 2>/dev/null )")
+	if [[ $? -ne 0 ]]; then
+		exit 1;
+	fi
+	##截取bundle id,这种截取方法，有一点不太好的就是：当applicationIdentifier的值包含：*时候，会截取失败,如：applicationIdentifier=6789.*
+	local bundleId=${applicationIdentifier#*.}
+	echo $bundleId
+}
+
+## 获取描述文件名称
+function getProvisionfileName()
+{
+	local provisionFile=$1
+	if [[ ! -f "$provisionFile" ]]; then
+		exit 1
+	fi
+	provisonfileName=$($CMD_PlistBuddy -c 'Print :Name' /dev/stdin <<< $($CMD_Security cms -D -i "$provisionFile" 2>/dev/null))
+	echo $provisonfileName
+}
+
+# 校验证书签名合法性
+function checkCodeSignIdentityValid()
+{
+	local codeSignIdentity=$1
+	local content=$($CMD_Security find-identity -v -p codesigning | grep "$codeSignIdentity")
+	echo "$content"
+}
+
+function getProvisionfileExpireTimestmap {
+	local provisionFile=$1
+	    ##切换到英文环境，不然无法转换成时间戳
+    export LANG="en_US.UTF-8"
+    ##获取描述文件的过期时间
+    local expirationTime=`$CMD_PlistBuddy -c 'Print :ExpirationDate' /dev/stdin <<< $($CMD_Security cms -D -i "$provisionFile" 2>/tmp/log.txt)`
+    local timestamp=`date -j -f "%a %b %d  %T %Z %Y" "$expirationTime" "+%s"`
+    # echo $(date -r `expr $timestamp `  "+%Y年%m月%d" )
+    echo "$timestamp"
+}
+
+##匹配描述文件
+function matchMobileProvisionFile()
+{	
+	##分发渠道
+	local channel=$1
+	local appBundleId=$2
+	##描述文件目录
+	local mobileProvisionFileDir=$3
+	if [[ ! -d "$mobileProvisionFileDir" ]]; then
+		exit 1
+	fi
+	##遍历
+	local provisionFile=''
+	local maxExpireTimestmap=0
+
+	for file in "${mobileProvisionFileDir}"/*.mobileprovision; do
+		local bundleIdFromProvisionFile=$(getProfileBundleId "$file")
+		local wildcard=${bundleIdFromProvisionFile:0-2} ##从右边取2个字符串
+
+		local orginPrefix=$(echo ${bundleIdFromProvisionFile%.*})
+		local targetPrefix=$(echo "${appBundleId%.*}")
+
+
+		if [[ "$appBundleId" == "$bundleIdFromProvisionFile"  || (( "$wildcard" == '.*' &&  "$orginPrefix" == "$targetPrefix" )) ]]  ; then
+
+			# echo "$bundleIdFromProvisionFile ： $appBundleId ，$orginPrefix : $targetPrefix "
+			local profileType=$(getProfileType "$file")
+			if [[ "$profileType" == "$channel" ]]; then
+				local timestmap=$(getProvisionfileExpireTimestmap "$file")
+				## 匹配到有效天数最大的描述文件
+				if [[ $timestmap -gt $maxExpireTimestmap ]]; then
+					provisionFile=$file
+					maxExpireTimestmap=$timestmap
+				fi
+			fi
+		fi
+	done
+	echo $provisionFile
+}
+
+
+## 获取描述文件UUID
+function getProvisionfileUUID()
+{
+	local provisionFile=$1
+	if [[ ! -f "$provisionFile" ]]; then
+		exit 1
+	fi
+	provisonfileUUID=$($CMD_PlistBuddy -c 'Print :UUID' /dev/stdin <<< $($CMD_Security cms -D -i "$provisionFile" 2>/dev/null))
+	echo $provisonfileUUID
+}
+## 获取描述文件TeamName
+function getProvisionfileTeamName()
+{
+	local provisionFile=$1
+	if [[ ! -f "$provisionFile" ]]; then
+		exit 1
+	fi
+	provisonfileTeamName=$($CMD_PlistBuddy -c 'Print :TeamName' /dev/stdin <<< $($CMD_Security cms -D -i "$provisionFile" 2>/dev/null))
+	echo $provisonfileTeamName
+}
+
+## 将描述文件的签名数据封装成证书
+function wrapProvisionSignDataToCer {
+	local provisionFile=$1
+	if [[ ! -f "$provisionFile" ]]; then
+		exit 1
+	fi
+
+	## 获取DeveloperCertificates 字段
+	local data=$($CMD_Security cms -D -i "$provisionFile" | grep data | head -n 1 | sed 's/.*<data>//g' | sed 's/<\/data>.*//g') 
+
+	if [[ $? -ne 0 ]]; then
+		exit 1
+	fi
+
+    ## 使用openssl进行解码 1. 构建cer证书 2. 解码证书
+	## 1. 将base64数据 通过base64 -d 解码并生成证书
+
+    local base64File='/tmp/tmp.b64'
+    `echo "${data}" > ${base64File}`
+	local tmpCerFile='/tmp/tmp.cer'
+    `base64 -d ${base64File} > ${tmpCerFile}`
+	echo "${tmpCerFile}"
+}
+
+function getProvisionCodeSignSerial {
+	local provisionFile=$1
+	local cerFile=$(wrapProvisionSignDataToCer "$provisionFile")
+	## 去掉空格
+	local serial=$( openssl x509 -inform der -noout -text -in "$cerFile" | grep "Serial Number" | cut -d ':' -f2 | sed 's/^[ ]//g')
+	echo "$serial"
+}
+
+## 获取描述文件中的签名id
+function getProvisionCodeSignIdentity
+{
+	local provisionFile=$1
+	local cerFile=$(wrapProvisionSignDataToCer "$provisionFile")
+
+    ##去掉前后空格
+	local codeSignIdentity=$(openssl x509  -inform der -noout -text -in "$cerFile" | grep Subject | grep "UID" | awk -F ", OU" '{print $1}' | cut -d "=" -f3 |  awk '{sub(/^ */, "");sub(/ *$/, "")}1' |sed 's/\"//g' )
+    ##必须使用"${}"这种形式，否则连续的空格会被转换成一个空格
+	## 这里使用-e 来解决中文签名id的问题
+	echo -e "${codeSignIdentity}"
+}
+
+function getProvisionfileCreateTimestmap {
+	local provisionFile=$1
+	##切换到英文环境，不然无法转换成时间戳
+    export LANG="en_US.UTF-8"
+    ##获取描述文件的过期时间
+    local createTime=`$CMD_PlistBuddy -c 'Print :CreationDate' /dev/stdin <<< $($CMD_Security cms -D -i "$provisionFile" 2>/tmp/log.txt)`
+    local timestamp=`date -j -f "%a %b %d  %T %Z %Y" "$createTime" "+%s"`
+    # echo $(date -r `expr $timestamp `  "+%Y年%m月%d" )
+    echo "$timestamp"
+}
+
+## 获取描述文件中指定证书的创建时间
+function getProvisionCodeSignCreateTimestamp {
+	local provisionFile=$1
+	local cerFile=$(wrapProvisionSignDataToCer "$provisionFile")
+
+    ##切换到英文环境，不然无法转换成时间戳
+    export LANG="en_US.UTF-8"
+	## 得到字符串： Not Before: Sep  7 07:21:52 2017 GMT
+	local startTimeStr=$( openssl x509  -inform der -noout -text -in "$cerFile" | grep "Not Before" )
+	## 截图第一个：之后的字符串，得到：Sep  7 07:21:52 2017 GMT
+	startTimeStr=$(echo ${startTimeStr#*:}) ## 截取,echo 去掉前后空格
+
+	## 格式化
+	local startTimestamp=$(date -j -f "%b %d  %T %Y %Z" "$startTimeStr" "+%s")
+	# echo $(date -r `expr $startTimestamp `  "+%Y年%m月%d" )
+	echo "$startTimestamp"
+}
+
+
+## 获取描述文件中指定证书的过期时间
+function getProvisionCodeSignExpireTimestamp {
+	local provisionFile=$1
+	local cerFile=$(wrapProvisionSignDataToCer "$provisionFile")
+
+    ##切换到英文环境，不然无法转换成时间戳
+    export LANG="en_US.UTF-8"
+    
+	## 得到字符串： Not Before: Sep  7 07:21:52 2017 GMT
+	local endTimeStr=$( openssl x509 -inform der -noout -text -in "$cerFile" | grep "Not After" )
+
+	## 截图第一个：之后的字符串，得到：Sep  7 07:21:52 2017 GMT
+	endTimeStr=$(echo ${endTimeStr#*:}) ## 截取，echo 去掉前后空格
+	## 格式化
+	local expireTimestamp=$(date -j -f "%b %d  %T %Y %Z" "$endTimeStr" "+%s")
+	# echo $(date -r `expr $expireTimestamp + 86400`  "+%Y年%m月%d" )
+	echo "$expireTimestamp"
+}
+
+##获取描述文件过期天数
+function getExpiretionDays()
+{
+	local expireTimestamp=$1
+    local nowTimestamp=`date +%s`
+    local r=$[expireTimestamp-nowTimestamp]
+    local days=$[r/60/60/24]
+    echo $days
+}
+
+
+function getProvisionfileExpireTimestmap {
+	local provisionFile=$1
+	    ##切换到英文环境，不然无法转换成时间戳
+    export LANG="en_US.UTF-8"
+    ##获取描述文件的过期时间
+    local expirationTime=`$CMD_PlistBuddy -c 'Print :ExpirationDate' /dev/stdin <<< $($CMD_Security cms -D -i "$provisionFile" 2>/tmp/log.txt)`
+    local timestamp=`date -j -f "%a %b %d  %T %Z %Y" "$expirationTime" "+%s"`
+    # echo $(date -r `expr $timestamp `  "+%Y年%m月%d" )
+    echo "$timestamp"
+}
+
+
+function getProfileInfo(){
+			if [[ ! -f "$1" ]]; then
+				errorExit "指定描述文件不存在!"
+			fi
+
+			provisionFileTeamID=$(getProvisionfileTeamID "$1")
+			provisionFileType=$(getProfileType "$1")
+			channelName=$(getProfileTypeCNName $provisionFileType)
+			provisionFileName=$(getProvisionfileName "$1")
+			provisionFileBundleID=$(getProfileBundleId "$1")
+			provisionfileTeamName=$(getProvisionfileTeamName "$1")
+			provisionFileUUID=$(getProvisionfileUUID "$1")
+
+  			provisionfileCreateTimestmap=$(getProvisionfileCreateTimestmap "$1")
+  			provisionfileCreateTime=$(date -r `expr $provisionfileCreateTimestmap `  "+%Y年%m月%d" )
+  			provisionfileExpireTimestmap=$(getProvisionfileExpireTimestmap "$1")
+  			provisionfileExpireTime=$(date -r `expr $provisionfileExpireTimestmap `  "+%Y年%m月%d" )
+			provisionFileExpirationDays=$(getExpiretionDays "$provisionfileExpireTimestmap")
+
+			provisionfileCodeSign=$(getProvisionCodeSignIdentity "$1")
+			provisionfileCodeSignSerial=$(getProvisionCodeSignSerial "$1")
+
+			provisionCodeSignCreateTimestmap=$(getProvisionCodeSignCreateTimestamp "$1")
+            provisionCodeSignCreateTime=$(date -r `expr $provisionCodeSignCreateTimestmap `  "+%Y年%m月%d" )
+
+			provisionCodeSignExpireTimestamp=$(getProvisionCodeSignExpireTimestamp "$1")
+			provisionCodeSignExpireTime=$(date -r `expr $provisionCodeSignExpireTimestamp + 86400`  "+%Y年%m月%d" )
+
+			provisionCodesignExpirationDays=$(getExpiretionDays "$provisionCodeSignExpireTimestamp")
+			
+
+			logit "【描述文件】名字：$provisionFileName "
+			logit "【描述文件】类型：${provisionFileType}（${channelName}）"
+			logit "【描述文件】TeamID：$provisionFileTeamID "
+			logit "【描述文件】Team Name：$provisionfileTeamName "
+			logit "【描述文件】BundleID：$provisionFileBundleID "
+			logit "【描述文件】UUID：$provisionFileUUID "
+			logit "【描述文件】创建时间：$provisionfileCreateTime "
+			logit "【描述文件】过期时间：$provisionfileExpireTime "
+			logit "【描述文件】有效天数：$provisionFileExpirationDays "
+
+			logit "【描述文件】使用的证书签名ID：[${provisionfileCodeSign}]"
+			logit "【描述文件】使用的证书序列号：$provisionfileCodeSignSerial"
+			logit "【描述文件】使用的证书创建时间：$provisionCodeSignCreateTime"
+			logit "【描述文件】使用的证书过期时间：$provisionCodeSignExpireTime"
+			logit "【描述文件】使用的证书有效天数：$provisionCodesignExpirationDays "
+
+			if [[ $provisionFileExpirationDays -lt 0 ]]; then
+				errorExit "描述文件:${provisionFileName} 已过期，请更新描述文件!"
+			fi
+			if [[ $provisionCodesignExpirationDays -lt 0 ]]; then
+				errorExit "证书:${provisionfileCodeSign} 已过期，请更新证书!"
+			fi
+}
+
 ###########################################核心逻辑#####################################################
 
-### Xcode版本
-xcVersion=$(getXcodeVersion)
-if [[ ! "$xcVersion" ]]; then
-	errorExit "获取当前XcodeVersion失败"
-fi
-logit "【构建信息】Xcode版本：$xcVersion"
+# ## 获取xcproj 工程列表
+# xcworkspace=$(findXcworkspace)
 
-
-## 获取xcproj 工程列表
-xcworkspace=$(findXcworkspace)
-
-xcprojPathList=()
-if [[ "$xcworkspace" ]]; then
+# xcprojPathList=()
+# if [[ "$xcworkspace" ]]; then
 	
-	logit "【构建信息】项目结构：多工程协同(workspace)"
+# 	logit "【构建信息】项目结构：多工程协同(workspace)"
 
-	##  外括号作用是转变为数组
-	xcprojPathList=($(getAllXcprojPathFromWorkspace "$xcworkspace"))
-	num=${#xcprojPathList[@]} ##数组长度 
-	if [[ $num -gt 1 ]]; then
-		i=0
-		for xcproj in ${xcprojPathList[*]}; do
-			# 算数运算命令 expr 计算并输出结果, 索引加1
-			i=$(expr $i + 1)
-			# ${##*/}:字符串模式匹配 移除最后一个/左边所有字符
-			logit "【构建信息】工程${i}：${xcproj##*/}"
-		done
+# 	##  外括号作用是转变为数组
+# 	xcprojPathList=($(getAllXcprojPathFromWorkspace "$xcworkspace"))
+# 	num=${#xcprojPathList[@]} ##数组长度 
+# 	if [[ $num -gt 1 ]]; then
+# 		i=0
+# 		for xcproj in ${xcprojPathList[*]}; do
+# 			# 算数运算命令 expr 计算并输出结果, 索引加1
+# 			i=$(expr $i + 1)
+# 			# ${##*/}:字符串模式匹配 移除最后一个/左边所有字符
+# 			logit "【构建信息】工程${i}：${xcproj##*/}"
+# 		done
+# 	fi
+
+# else
+# 	## 查找xcodeproj 文件
+# 	logit "【构建信息】项目结构：单工程"
+# 	xcodeprojPath=$(findXcodeproj)
+# 	if [[ "$xcodeprojPath" ]]; then
+# 		logit "【构建信息】工程路径:$xcodeprojPath"
+# 	else
+# 		errorExit "当前目录不存在.xcworkspace或.xcodeproj工程文件，请在项目工程目录下执行脚本$(basename $0)"
+# 	fi
+# 	xcprojPathList=("$xcodeprojPath")
+# fi
+
+
+# ## 需要构建的xcprojPath列表,即除去Pods.xcodeproj之外的
+# buildXcprojPathList=()
+
+# for (( i = 0; i < ${#xcprojPathList[*]}; i++ ))
+# do
+# 	path=${xcprojPathList[i]};
+# 	if [[ "${path##*/}" == "Pods.xcodeproj" ]]
+# 	then
+# 		continue;
+# 	fi
+
+# 	## 数组追加元素括号里面第一个参数不能用双引号，否则会多出一个空格
+# 	buildXcprojPathList=(${buildXcprojPathList[*]} "$path")
+# done
+
+# logit "【构建信息】可构建的工程数量（不含Pods）:${#buildXcprojPathList[*]}"
+
+
+# ## 获取可构建的工程列表的所有target
+# targetsInfoListStr=$(getAllTargetsInfoFromXcprojList "${buildXcprojPathList[*]}")
+
+# ## 设置数组分隔符号为分号
+# OLD_IFS="$IFS" ##记录当前分隔符号
+# IFS=";"
+# targetsInfoList=($targetsInfoListStr)
+
+# logit "【构建信息】可构建的Target数量（不含Pods）:${#targetsInfoList[*]}"
+
+# i=1
+# for targetInfo in ${targetsInfoList[*]}; do
+# 	tId=$(getTargetInfoValue "$targetInfo" "id")
+# 	tName=$(getTargetInfoValue "$targetInfo" "name")
+# 	logit "【构建信息】可构建Target${i}：${tName}"
+# 	i=$(expr $i + 1 )
+# done
+
+# # TODO:让用户选择构建的 target 目标
+# BUILD_TARGET="Moments_2"
+
+# IFS="$OLD_IFS" ##还原
+
+# ##获取构建的targetName和targetId 和构建的xcodeprojPath
+# targetName=''
+# targetId=''
+# xcodeprojPath=''
+# if [[ "$BUILD_TARGET" ]]; then
+# 	for targetInfo in ${targetsInfoList[*]}; do
+# 		tId=$(getTargetInfoValue "$targetInfo" "id")
+# 		tName=$(getTargetInfoValue "$targetInfo" "name")
+# 		path=$(getTargetInfoValue "$targetInfo" "xcproj")
+# 		if [[ "$tName" == "$BUILD_TARGET" ]]; then
+# 			targetName="$tName"
+# 			targetId="$tId"
+# 			xcodeprojPath="$path"
+# 			break;
+# 		fi
+
+# 	done
+# else
+# 		## 默认选择第一个target
+# 	targetInfo=${targetsInfoList[0]}
+# 	targetId=$(getTargetInfoValue "$targetInfo" "id")
+# 	targetName=$(getTargetInfoValue "$targetInfo" "name")
+# 	xcodeprojPath=$(getTargetInfoValue "$targetInfo" "xcproj")
+# fi
+
+# logit "【构建信息】构建Target：${targetName}（${targetId}）"
+
+# if [[ ! "targetName" ]] || [[ ! "targetId" ]] || [[ ! "xcodeprojPath" ]]; then
+# 	errorExit "获取构建信息失败!"
+# fi
+
+# ##获取构配置类型的ID （Release和Debug分别对应不同的ID）
+# configurationTypeIds=$(getConfigurationIds "$xcodeprojPath" "$targetId")
+# if [[ ! "$configurationTypeIds" ]]; then
+# 	errorExit "获取配置模式(Release和Debug)Id列表失败"
+# fi
+
+# dm_pbxproj=$xcodeprojPath/project.pbxproj
+# for id in ${configurationTypeIds[@]}; do
+# 	name=$($CMD_PlistBuddy -c "Print :objects:$id:name" "$dm_pbxproj")
+#     logit "【构建信息】配置模式: $name"
+# done
+
+# # # TODO: 允许用户选择构建配置
+# CONFIGRATION_TYPE="Internal"
+
+# ## 获取当前构建的配置模式ID
+# configurationId=$(getConfigurationIdWithType "$xcodeprojPath" "$targetId" "$CONFIGRATION_TYPE")
+# if [[ ! "$configurationId" ]]; then
+# 	errorExit "获取${CONFIGRATION_TYPE}配置模式Id失败"
+# fi
+# logit "【构建信息】配置模式：$CONFIGRATION_TYPE"
+
+# bundleIdLong=$($CMD_PlistBuddy -c "Print :objects:$configurationId:buildSettings" "$dm_pbxproj")
+# warning "啊哈哈哈哈哈哈: ${bundleIdLong}"
+
+CHANNEL='enterprise'
+PROVISION_DIR="${HOME}/Library/MobileDevice/Provisioning Profiles"
+projectBundleId="com.dealmoon.moments.internal2"
+
+logit "【构建信息】进行描述文件匹配..."
+
+# 匹配描述文件
+provisionFile=$(matchMobileProvisionFile "$CHANNEL" "$projectBundleId" "$PROVISION_DIR")
+if [[ ! "$provisionFile" ]]; then
+	errorExit "不存在Bundle Id 为 ${projectBundleId} 且分发渠道为${CHANNEL}的描述文件，请检查${PROVISION_DIR}目录是否存在对应描述文件"
+fi
+
+logit "【构建信息】匹配描述文件：$provisionFile"
+
+# 展示描述文件信息
+getProfileInfo "$provisionFile"
+
+# 获取签名
+codeSignIdentity=$(getProvisionCodeSignIdentity "$provisionFile")
+if [[ ! "$codeSignIdentity" ]]; then
+	errorExit "获取描述文件签名失败! 描述文件:${provisionFile}"
+fi
+
+logit "【签名信息】匹配签名ID：【$codeSignIdentity"】
+
+result=$(checkCodeSignIdentityValid "$codeSignIdentity")
+if [[ ! "$result" ]]; then
+	errorExit "签名ID:${codeSignIdentity}无效，请检查钥匙串是否导入对应的证书或脚本访问keychain权限不足，请使用-p参数指定密码 "
+fi
+
+if [[ $ONLYSHOWSIGN ]]; then
+	exit;
+fi
+
+## 获取git仓库版本数量
+function getGitRepositoryVersionNumbers (){
+		## 是否存在.git目录
+	local gitRepository=$(find "$Shell_Work_Path" -maxdepth 1  -type d -iname ".git")
+	if [[ ! -d "$gitRepository" ]]; then
+		exit 1
 	fi
 
-else
-	## 查找xcodeproj 文件
-	logit "【构建信息】项目结构：单工程"
-	xcodeprojPath=$(findXcodeproj)
-	if [[ "$xcodeprojPath" ]]; then
-		logit "【构建信息】工程路径:$xcodeprojPath"
-	else
-		errorExit "当前目录不存在.xcworkspace或.xcodeproj工程文件，请在项目工程目录下执行脚本$(basename $0)"
+	local gitRepositoryVersionNumbers=$(git -C "$Shell_Work_Path" rev-list HEAD 2>/dev/null | wc -l | grep -o "[^ ]\+\( \+[^ ]\+\)*")
+	if [[ $? -ne 0 ]]; then
+		## 可能是git只有在本地，而没有提交到服务器,或者没有网络
+		exit 1
 	fi
-	xcprojPathList=("$xcodeprojPath")
+	echo $gitRepositoryVersionNumbers
+}
+
+## 设置git仓库版本数量
+gitRepositoryVersionNumbers=$(getGitRepositoryVersionNumbers)
+if [[ "$gitRepositoryVersionNumbers" ]]; then
+    logit "【构建信息】设置构建版本号：$gitRepositoryVersionNumbers"
 fi
-
-
-## 需要构建的xcprojPath列表,即除去Pods.xcodeproj之外的
-buildXcprojPathList=()
-
-for (( i = 0; i < ${#xcprojPathList[*]}; i++ ))
-do
-	path=${xcprojPathList[i]};
-	if [[ "${path##*/}" == "Pods.xcodeproj" ]]
-	then
-		continue;
-	fi
-
-	## 数组追加元素括号里面第一个参数不能用双引号，否则会多出一个空格
-	buildXcprojPathList=(${buildXcprojPathList[*]} "$path")
-done
-
-logit "【构建信息】可构建的工程数量（不含Pods）:${#buildXcprojPathList[*]}"
-
-
-## 获取可构建的工程列表的所有target
-targetsInfoListStr=$(getAllTargetsInfoFromXcprojList "${buildXcprojPathList[*]}")
-
-## 设置数组分隔符号为分号
-OLD_IFS="$IFS" ##记录当前分隔符号
-IFS=";"
-targetsInfoList=($targetsInfoListStr)
-
-logit "【构建信息】可构建的Target数量（不含Pods）:${#targetsInfoList[*]}"
-
-i=1
-for targetInfo in ${targetsInfoList[*]}; do
-	tId=$(getTargetInfoValue "$targetInfo" "id")
-	tName=$(getTargetInfoValue "$targetInfo" "name")
-	logit "【构建信息】可构建Target${i}：${tName}"
-	i=$(expr $i + 1 )
-done
-
-# TODO:让用户选择构建的 target 目标
-BUILD_TARGET="Moments_2"
-
-IFS="$OLD_IFS" ##还原
-
-##获取构建的targetName和targetId 和构建的xcodeprojPath
-targetName=''
-targetId=''
-xcodeprojPath=''
-if [[ "$BUILD_TARGET" ]]; then
-	for targetInfo in ${targetsInfoList[*]}; do
-		tId=$(getTargetInfoValue "$targetInfo" "id")
-		tName=$(getTargetInfoValue "$targetInfo" "name")
-		path=$(getTargetInfoValue "$targetInfo" "xcproj")
-		if [[ "$tName" == "$BUILD_TARGET" ]]; then
-			targetName="$tName"
-			targetId="$tId"
-			xcodeprojPath="$path"
-			break;
-		fi
-
-	done
-else
-		## 默认选择第一个target
-	targetInfo=${targetsInfoList[0]}
-	targetId=$(getTargetInfoValue "$targetInfo" "id")
-	targetName=$(getTargetInfoValue "$targetInfo" "name")
-	xcodeprojPath=$(getTargetInfoValue "$targetInfo" "xcproj")
-fi
-
-logit "【构建信息】构建Target：${targetName}（${targetId}）"
-
-if [[ ! "targetName" ]] || [[ ! "targetId" ]] || [[ ! "xcodeprojPath" ]]; then
-	errorExit "获取构建信息失败!"
-fi
-
-##获取构配置类型的ID （Release和Debug分别对应不同的ID）
-configurationTypeIds=$(getConfigurationIds "$xcodeprojPath" "$targetId")
-if [[ ! "$configurationTypeIds" ]]; then
-	errorExit "获取配置模式(Release和Debug)Id列表失败"
-fi
-
-dm_pbxproj=$xcodeprojPath/project.pbxproj
-for id in ${configurationTypeIds[@]}; do
-	name=$($CMD_PlistBuddy -c "Print :objects:$id:name" "$dm_pbxproj")
-    logit "【构建信息】配置模式: $name"
-done
-
-# # TODO: 允许用户选择构建配置
-CONFIGRATION_TYPE="Internal"
-
-## 获取当前构建的配置模式ID
-configurationId=$(getConfigurationIdWithType "$xcodeprojPath" "$targetId" "$CONFIGRATION_TYPE")
-if [[ ! "$configurationId" ]]; then
-	errorExit "获取${CONFIGRATION_TYPE}配置模式Id失败"
-fi
-logit "【构建信息】配置模式：$CONFIGRATION_TYPE"
-
-bundleIdLong=$($CMD_PlistBuddy -c "Print :objects:$configurationId:buildSettings" "$dm_pbxproj")
-warning "啊哈哈哈哈哈哈: ${bundleIdLong}"
-
-## 获取工程中的Bundle Id
-# projectBundleId=$(getProjectBundleId "$xcodeprojPath" "$configurationId")
-# if [[ ! "$projectBundleId" ]] ; then
-# 	errorExit "获取项目的Bundle Id失败"
-# fi
-
-# logit "【构建信息】Bundle Id：$projectBundleId"
-# infoPlistFile=$(getInfoPlistFile "$xcodeprojPath" "$configurationId")
-# if [[ ! -f "$infoPlistFile" ]]; then
-# 	errorExit "获取infoPlist文件失败"
-# fi
-# logit "【构建信息】InfoPlist 文件：$infoPlistFile"
-
-##检查openssl
-# checkOpenssl
-
-# logit "【构建信息】进行描述文件匹配..."
-# # 匹配描述文件
-# provisionFile=$(matchMobileProvisionFile "$CHANNEL" "$projectBundleId" "$PROVISION_DIR")
-# if [[ ! "$provisionFile" ]]; then
-# 	errorExit "不存在Bundle Id 为 ${projectBundleId} 且分发渠道为${CHANNEL}的描述文件，请检查${PROVISION_DIR}目录是否存在对应描述文件"
-# fi
-
-# #导入描述文件
-# open "$provisionFile"
-
-# logit "【构建信息】匹配描述文件：$provisionFile"
-
-# # 展示描述文件信息
-# getProfileInfo "$provisionFile"
-
-# # 获取签名
-# codeSignIdentity=$(getProvisionCodeSignIdentity "$provisionFile")
-# if [[ ! "$codeSignIdentity" ]]; then
-# 	errorExit "获取描述文件签名失败! 描述文件:${provisionFile}"
-# fi
-
-# logit "【签名信息】匹配签名ID：【$codeSignIdentity"】
-
-# result=$(checkCodeSignIdentityValid "$codeSignIdentity")
-# if [[ ! "$result" ]]; then
-# 	errorExit "签名ID:${codeSignIdentity}无效，请检查钥匙串是否导入对应的证书或脚本访问keychain权限不足，请使用-p参数指定密码 "
-# fi
-
-# if [[ $ONLYSHOWSIGN ]]; then
-# 	exit;
-# fi

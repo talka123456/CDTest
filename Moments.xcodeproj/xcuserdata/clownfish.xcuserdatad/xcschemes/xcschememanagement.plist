@@ -9,21 +9,6 @@
 			<key>orderHint</key>
 			<integer>37</integer>
 		</dict>
-		<key>Moments-AppStore.xcscheme_^#shared#^_</key>
-		<dict>
-			<key>orderHint</key>
-			<integer>1</integer>
-		</dict>
-		<key>Moments-Internal.xcscheme_^#shared#^_</key>
-		<dict>
-			<key>orderHint</key>
-			<integer>2</integer>
-		</dict>
-		<key>Moments.xcscheme_^#shared#^_</key>
-		<dict>
-			<key>orderHint</key>
-			<integer>0</integer>
-		</dict>
 		<key>Moments_2 copy.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>

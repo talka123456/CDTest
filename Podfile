@@ -45,7 +45,7 @@ def test_pods
   pod 'RxBlocking', '= 5.1.1'
 end
 
-targetArray = ['Moments', 'Moments_2', 'Moments_3']
+targetArray = ['Moments_2', 'Moments_3']
 targetArray.each do |t|
   target t do
     dev_pods
@@ -56,11 +56,11 @@ targetArray.each do |t|
   end
 end
 
-target 'MomentsTests' do
-  core_pods
-  thirdparty_pods
-  test_pods
-end
+#target 'MomentsTests' do
+#  core_pods
+#  thirdparty_pods
+#  test_pods
+#end
 
 post_install do |installer|
   installer.pods_project.targets.each do |target|
